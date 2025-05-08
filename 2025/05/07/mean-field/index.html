@@ -6,18 +6,20 @@
   
   <title>Flow-based Generative Model from Mean Field Perspective | Chiyuen&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="IntroductionFlow matching and Schr$&quot;{\rm o}$dinger Bridge Matching are methods for training generative models by matching the flow between two distributions through a neural network. The goal is">
+  <meta name="description" content="Introduction Flow matching and Schr\(\&quot;{\rm o}\)dinger Bridge Matching are methods for training generative models by matching the flow between two distributions through a neural network. The goal">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Flow-based Generative Model from Mean Field Perspective">
 <meta property="og:url" content="http://example.com/2025/05/07/mean-field/index.html">
 <meta property="og:site_name" content="Chiyuen&#39;s Blog">
-<meta property="og:description" content="IntroductionFlow matching and Schr$&quot;{\rm o}$dinger Bridge Matching are methods for training generative models by matching the flow between two distributions through a neural network. The goal is">
+<meta property="og:description" content="Introduction Flow matching and Schr\(\&quot;{\rm o}\)dinger Bridge Matching are methods for training generative models by matching the flow between two distributions through a neural network. The goal">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2025/05/07/mean-field/straight.png">
 <meta property="article:published_time" content="2025-05-07T12:32:08.000Z">
-<meta property="article:modified_time" content="2025-05-08T10:17:43.954Z">
+<meta property="article:modified_time" content="2025-05-08T12:29:28.839Z">
 <meta property="article:author" content="Zhixuan Zhou">
 <meta property="article:tag" content="Flow Matching, Mean Field Control, Schr$\&quot;{\rm o}$dinger Bridge">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2025/05/07/mean-field/straight.png">
   
     <link rel="alternate" href="/atom.xml" title="Chiyuen's Blog" type="application/atom+xml">
   
@@ -96,18 +98,98 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>Flow matching and Schr$&quot;{\rm o}$dinger Bridge Matching are methods for training <strong>generative</strong> models by matching the <strong>flow</strong> between two distributions through a neural network. The goal is to learn a mapping between two distributions (e.g. from Gaussian to natural images) by minimizing the difference between the pre-defined flow and the learned one. In this blog, we try to unify&#x2F; connect them from the perspective of <strong>mean field control</strong> (optimal control).</p>
-<h3 id="Flow-Matching"><a href="#Flow-Matching" class="headerlink" title="Flow Matching"></a>Flow Matching</h3><p>Consider two distributions $\mu_0$ and $\mu_1$ over $\mathbb{R}^d$. The ODE based methods (e.g. normalizing flows, flow matching) learn a mapping between these two distributions by solving the following ODE:</p>
-<p>$$<br>\frac{dx_t}{dt} &#x3D; f_\theta(x_t, t), \quad x_0 \sim \rho_0, \quad \rho_0&#x3D;\mu_0, \quad \rho_1&#x3D;\mu_1<br>\tag{1}<br>$$</p>
-<p>where $f_\theta$ is a neural network parameterized by $\theta$. Once the velocity field $f_\theta$ is learned, we can sample from $\rho_1$ by solving the ODE:<br>$$<br>x_1 &#x3D; x_0 + \int_0^1 f_\theta(x_t, t) dt,\quad x_0 \sim \rho_0, \quad \rho_0&#x3D;\mu_0\tag{2}<br>$$</p>
-<h4 id="Construct-A-Path"><a href="#Construct-A-Path" class="headerlink" title="Construct A Path"></a>Construct A Path</h4><p>Unlike normalizing flows, which only constraints the target distribution by minimizing the <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence">Kullback-Leibler divergence</a> between the generated distribution $\rho_1$ and the real target distribution $\mu_1$, flow matching methods do not directly minimize the KL divergence. Instead, they construct a path (flow) between the two distributions and fit the derivative (a.k.a. the <strong>velocity field</strong>) of the path by minimizing the following objective:<br>$$<br>\min_\theta \mathbb{E}<em>{(x_0, x_1)\sim \pi}\left[\left|f</em>\theta(x_t,t)-\frac{\partial\Phi_t(x_0,x_t)}{\partial t}\right|^2\right]\tag{3}<br>$$</p>
-<p>where $\pi\in\prod(\mu_0,\mu_1)$ is one of the joint distribution whose marginals are $\mu_0$ and $\mu_1$. $\Phi_t(x_0,x_1):\mathbb{R}^d\times \mathbb{R}^d\rightarrow \mathbb{R}^d$ is the trajectory of the flow between $x_0$ and $x_1$ at time $t$. It satisfies $x_t&#x3D;\Phi_t(x_0,x_1)$, and $\frac{\partial\Phi_t(x_0,x_t)}{\partial t}$ is the velocity field of the flow. The objective is to minimize the difference between the learned velocity field $f_\theta$ and the pre-defined velocity field $\frac{\partial\Phi_t(x_0,x_t)}{\partial t}$.</p>
-<h4 id="Choice-of-pi-and-Phi-t"><a href="#Choice-of-pi-and-Phi-t" class="headerlink" title="Choice of $\pi$ and $\Phi_t$"></a>Choice of $\pi$ and $\Phi_t$</h4><p>Here comes the choice of $\pi$ and $\Phi_t$. We first talk about the choice of the path $\Phi_t$ between two points $x_0$ and $x_1$. One of the most intuitive options will be the straight line, i.e., the linear interpolation $x_t&#x3D;(1-t)x_0+tx_1$.</p>
+        <h2 id="introduction">Introduction</h2>
+<p>Flow matching and Schr<span class="math inline">\(\&quot;{\rm
+o}\)</span>dinger Bridge Matching are methods for training
+<strong>generative</strong> models by matching the <strong>flow</strong>
+between two distributions through a neural network. The goal is to learn
+a mapping between two distributions (e.g. from Gaussian to natural
+images) by minimizing the difference between the pre-defined flow and
+the learned one. In this blog, we try to unify/ connect them from the
+perspective of <strong>mean field control</strong> (optimal
+control).</p>
+<h3 id="flow-matching">Flow Matching</h3>
+<p>Consider two distributions <span class="math inline">\(\mu_0\)</span>
+and <span class="math inline">\(\mu_1\)</span> over <span
+class="math inline">\(\mathbb{R}^d\)</span>. The ODE based methods
+(e.g. normalizing flows, flow matching) learn a mapping between these
+two distributions by solving the following ODE:</p>
+<p><span class="math display">\[
+\frac{dx_t}{dt} = f_\theta(x_t, t), \quad x_0 \sim \rho_0, \quad
+\rho_0=\mu_0, \quad \rho_1=\mu_1
+\tag{1}
+\]</span></p>
+<p>where <span class="math inline">\(f_\theta\)</span> is a neural
+network parameterized by <span class="math inline">\(\theta\)</span>.
+Once the velocity field <span class="math inline">\(f_\theta\)</span> is
+learned, we can sample from <span class="math inline">\(\rho_1\)</span>
+by solving the ODE: <span class="math display">\[
+x_1 = x_0 + \int_0^1 f_\theta(x_t, t) dt,\quad x_0 \sim \rho_0, \quad
+\rho_0=\mu_0\tag{2}
+\]</span></p>
+<h4 id="construct-a-path">Construct A Path</h4>
+<p>Unlike normalizing flows, which only constraints the target
+distribution by minimizing the <a
+target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence">Kullback-Leibler
+divergence</a> between the generated distribution <span
+class="math inline">\(\rho_1\)</span> and the real target distribution
+<span class="math inline">\(\mu_1\)</span>, flow matching methods do not
+directly minimize the KL divergence. Instead, they construct a path
+(flow) between the two distributions and fit the derivative (a.k.a. the
+<strong>velocity field</strong>) of the path by minimizing the following
+objective: <span class="math display">\[
+\min_\theta \mathbb{E}_{(x_0, x_1)\sim
+\pi}\left[\left\|f_\theta(x_t,t)-\frac{\partial\Phi_t(x_0,x_t)}{\partial
+t}\right\|^2\right]\tag{3}
+\]</span></p>
+<p>where <span class="math inline">\(\pi\in\prod(\mu_0,\mu_1)\)</span>
+is one of the joint distribution whose marginals are <span
+class="math inline">\(\mu_0\)</span> and <span
+class="math inline">\(\mu_1\)</span>. <span
+class="math inline">\(\Phi_t(x_0,x_1):\mathbb{R}^d\times
+\mathbb{R}^d\rightarrow \mathbb{R}^d\)</span> is the trajectory of the
+flow between <span class="math inline">\(x_0\)</span> and <span
+class="math inline">\(x_1\)</span> at time <span
+class="math inline">\(t\)</span>. It satisfies <span
+class="math inline">\(x_t=\Phi_t(x_0,x_1)\)</span>, and <span
+class="math inline">\(\frac{\partial\Phi_t(x_0,x_t)}{\partial
+t}\)</span> is the velocity field of the flow. The objective is to
+minimize the difference between the learned velocity field <span
+class="math inline">\(f_\theta\)</span> and the pre-defined velocity
+field <span
+class="math inline">\(\frac{\partial\Phi_t(x_0,x_t)}{\partial
+t}\)</span>.</p>
+<h4 id="choice-of-pi-and-phi_t">Choice of <span
+class="math inline">\(\pi\)</span> and <span
+class="math inline">\(\Phi_t\)</span></h4>
+<p>Here comes the choice of <span class="math inline">\(\pi\)</span> and
+<span class="math inline">\(\Phi_t\)</span>. We first talk about the
+choice of the path <span class="math inline">\(\Phi_t\)</span> between
+two points <span class="math inline">\(x_0\)</span> and <span
+class="math inline">\(x_1\)</span>. One of the most intuitive options
+will be the straight line, i.e., the linear interpolation <span
+class="math inline">\(x_t=\Phi_t(x_0,x_1)=(1-t)x_0+tx_1\)</span>. Hence,
+the velocity field is given by <span
+class="math inline">\(\frac{\partial \Phi_t}{\partial
+t}=x_1-x_0\)</span>.</p>
+<p>Besides the <strong>simplicity</strong> of the linear interpolation,
+another advantage is that if the learned velocity field perfectly
+matches the pre-defined velocity field, then the generated distribution
+<span class="math inline">\(\rho_1\)</span> will be exactly the target
+distribution <span class="math inline">\(\mu_1\)</span> and we can
+sample from <span class="math inline">\(\mu_1\)</span> by <span
+class="math inline">\(x_0+f_\theta(x_0,0)\)</span> because the velocity
+is constant. ( Of course in most cases it can not fit perfectly and
+therefore we solve it with eq. (2) ).</p>
+<figure>
+<img src="straight.png" alt="flow" />
+<figcaption aria-hidden="true">flow</figcaption>
+</figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2025/05/07/mean-field/" data-id="cmafa2ptp0000mrd29mlte5jm" data-title="Flow-based Generative Model from Mean Field Perspective" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2025/05/07/mean-field/" data-id="cmafctzgy0000x1d297lh4w8m" data-title="Flow-based Generative Model from Mean Field Perspective" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       

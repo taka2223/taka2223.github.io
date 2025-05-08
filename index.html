@@ -93,68 +93,23 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>Flow matching is a method for training <strong>generative</strong> models by matching the <strong>flow</strong> between two distributions through a neural network. The goal is to learn a mapping between two distributions (e.g. from Gaussian to natural images) by minimizing the difference between the pre-defined flow and the learned one. In this blog, we try to use </p>
+        <h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>Flow matching and Schr$&quot;{\rm o}$dinger Bridge Matching are methods for training <strong>generative</strong> models by matching the <strong>flow</strong> between two distributions through a neural network. The goal is to learn a mapping between two distributions (e.g. from Gaussian to natural images) by minimizing the difference between the pre-defined flow and the learned one. In this blog, we try to unify&#x2F; connect them from the perspective of <strong>mean field control</strong> (optimal control).</p>
+<h3 id="Flow-Matching"><a href="#Flow-Matching" class="headerlink" title="Flow Matching"></a>Flow Matching</h3><p>Consider two distributions $\mu_0$ and $\mu_1$ over $\mathbb{R}^d$. The ODE based methods (e.g. normalizing flows, flow matching) learn a mapping between these two distributions by solving the following ODE:</p>
+<p>$$<br>\frac{dx_t}{dt} &#x3D; f_\theta(x_t, t), \quad x_0 \sim \rho_0, \quad \rho_0&#x3D;\mu_0, \quad \rho_1&#x3D;\mu_1<br>\tag{1}<br>$$</p>
+<p>where $f_\theta$ is a neural network parameterized by $\theta$. Once the velocity field $f_\theta$ is learned, we can sample from $\rho_1$ by solving the ODE:<br>$$<br>x_1 &#x3D; x_0 + \int_0^1 f_\theta(x_t, t) dt,\quad x_0 \sim \rho_0, \quad \rho_0&#x3D;\mu_0\tag{2}<br>$$</p>
+<h4 id="Construct-A-Path"><a href="#Construct-A-Path" class="headerlink" title="Construct A Path"></a>Construct A Path</h4><p>Unlike normalizing flows, which only constraints the target distribution by minimizing the <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence">Kullback-Leibler divergence</a> between the generated distribution $\rho_1$ and the real target distribution $\mu_1$, flow matching methods do not directly minimize the KL divergence. Instead, they construct a path (flow) between the two distributions and fit the derivative (a.k.a. the <strong>velocity field</strong>) of the path by minimizing the following objective:<br>$$<br>\min_\theta \mathbb{E}<em>{(x_0, x_1)\sim \pi}\left[\left|f</em>\theta(x_t,t)-\frac{\partial\Phi_t(x_0,x_t)}{\partial t}\right|^2\right]\tag{3}<br>$$</p>
+<p>where $\pi\in\prod(\mu_0,\mu_1)$ is one of the joint distribution whose marginals are $\mu_0$ and $\mu_1$. $\Phi_t(x_0,x_1):\mathbb{R}^d\times \mathbb{R}^d\rightarrow \mathbb{R}^d$ is the trajectory of the flow between $x_0$ and $x_1$ at time $t$. It satisfies $x_t&#x3D;\Phi_t(x_0,x_1)$, and $\frac{\partial\Phi_t(x_0,x_t)}{\partial t}$ is the velocity field of the flow. The objective is to minimize the difference between the learned velocity field $f_\theta$ and the pre-defined velocity field $\frac{\partial\Phi_t(x_0,x_t)}{\partial t}$.</p>
+<h4 id="Choice-of-pi-and-Phi-t"><a href="#Choice-of-pi-and-Phi-t" class="headerlink" title="Choice of $\pi$ and $\Phi_t$"></a>Choice of $\pi$ and $\Phi_t$</h4><p>Here comes the choice of $\pi$ and $\Phi_t$. We first talk about the choice of the path $\Phi_t$ between two points $x_0$ and $x_1$. One of the most intuitive options will be the straight line, i.e., the linear interpolation $x_t&#x3D;(1-t)x_0+tx_1$.</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2025/05/07/mean-field/" data-id="cmaeqwe1f0001afd24pebc7ae" data-title="Flow-based Generative Model from Mean Field Perspective" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2025/05/07/mean-field/" data-id="cmafa2ptp0000mrd29mlte5jm" data-title="Flow-based Generative Model from Mean Field Perspective" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Flow-Matching-Mean-Field-Control-Sch-rodinger-Bridge/" rel="tag">Flow Matching, Mean Field Control, Sch\&quot;rodinger Bridge</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Flow-Matching-Mean-Field-Control-Schr-rm-o-dinger-Bridge/" rel="tag">Flow Matching, Mean Field Control, Schr$\&quot;{\rm o}$dinger Bridge</a></li></ul>
 
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-hello-world" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/05/07/hello-world/" class="article-date">
-  <time class="dt-published" datetime="2025-05-07T12:28:16.752Z" itemprop="datePublished">2025-05-07</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/05/07/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2025/05/07/hello-world/" data-id="cmaeqwe1d0000afd22lis1lh8" data-title="Hello World" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
     </footer>
   </div>
   
@@ -176,7 +131,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flow-Matching-Mean-Field-Control-Sch-rodinger-Bridge/" rel="tag">Flow Matching, Mean Field Control, Sch\&quot;rodinger Bridge</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flow-Matching-Mean-Field-Control-Schr-rm-o-dinger-Bridge/" rel="tag">Flow Matching, Mean Field Control, Schr$\&quot;{\rm o}$dinger Bridge</a></li></ul>
     </div>
   </div>
 
@@ -186,7 +141,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Flow-Matching-Mean-Field-Control-Sch-rodinger-Bridge/" style="font-size: 10px;">Flow Matching, Mean Field Control, Sch\"rodinger Bridge</a>
+      <a href="/tags/Flow-Matching-Mean-Field-Control-Schr-rm-o-dinger-Bridge/" style="font-size: 10px;">Flow Matching, Mean Field Control, Schr$\"{\rm o}$dinger Bridge</a>
     </div>
   </div>
 
@@ -209,10 +164,6 @@
         
           <li>
             <a href="/2025/05/07/mean-field/">Flow-based Generative Model from Mean Field Perspective</a>
-          </li>
-        
-          <li>
-            <a href="/2025/05/07/hello-world/">Hello World</a>
           </li>
         
       </ul>

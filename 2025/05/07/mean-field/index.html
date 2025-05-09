@@ -1,105 +1,205 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  
-  
-  <title>Flow-based Generative Model from Mean Field Perspective | Chiyuen&#39;s Blog</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="Introduction Flow matching and Schr\(\&quot;{\rm o}\)dinger Bridge Matching are methods for training generative models by matching the flow between two distributions through a neural network. The goal">
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Introduction Flow matching and Schr\(\ddot{\rm o}\)dinger Bridge Matching are methods for training generative models by matching the flow between two distributions through a neural network. The goal i">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Flow-based Generative Model from Mean Field Perspective">
 <meta property="og:url" content="http://example.com/2025/05/07/mean-field/index.html">
 <meta property="og:site_name" content="Chiyuen&#39;s Blog">
-<meta property="og:description" content="Introduction Flow matching and Schr\(\&quot;{\rm o}\)dinger Bridge Matching are methods for training generative models by matching the flow between two distributions through a neural network. The goal">
+<meta property="og:description" content="Introduction Flow matching and Schr\(\ddot{\rm o}\)dinger Bridge Matching are methods for training generative models by matching the flow between two distributions through a neural network. The goal i">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2025/05/07/mean-field/straight.png">
+<meta property="og:image" content="http://example.com/.com//straight.png">
 <meta property="article:published_time" content="2025-05-07T12:32:08.000Z">
-<meta property="article:modified_time" content="2025-05-08T12:29:28.839Z">
+<meta property="article:modified_time" content="2025-05-09T05:31:58.249Z">
 <meta property="article:author" content="Zhixuan Zhou">
-<meta property="article:tag" content="Flow Matching, Mean Field Control, Schr$\&quot;{\rm o}$dinger Bridge">
+<meta property="article:tag" content="Flow Matching, Mean Field Control, Schr$\ddot{\rm o}$dinger Bridge">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2025/05/07/mean-field/straight.png">
-  
-    <link rel="alternate" href="/atom.xml" title="Chiyuen's Blog" type="application/atom+xml">
-  
-  
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-  
-<link rel="stylesheet" href="/css/style.css">
+<meta name="twitter:image" content="http://example.com/.com//straight.png">
 
-  
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+<link rel="canonical" href="http://example.com/2025/05/07/mean-field/">
 
-  
-  
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
 
-<meta name="generator" content="Hexo 7.3.0"></head>
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Chiyuen&#39;s Blog</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-        
-          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
-        
-        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
-      </div>
+  <title>Flow-based Generative Model from Mean Field Perspective | Chiyuen's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
   </div>
-</header>
 
-      <div class="outer">
-        <section id="main"><article id="post-mean-field" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/05/07/mean-field/" class="article-date">
-  <time class="dt-published" datetime="2025-05-07T12:32:08.000Z" itemprop="datePublished">2025-05-07</time>
-</a>
-    
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Chiyuen's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
   </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="p-name article-title" itemprop="headline name">
-      Flow-based Generative Model from Mean Field Perspective
-    </h1>
-  
 
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/05/07/mean-field/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Zhixuan Zhou">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Chiyuen's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Flow-based Generative Model from Mean Field Perspective
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2025-05-07 08:32:08" itemprop="dateCreated datePublished" datetime="2025-05-07T08:32:08-04:00">2025-05-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-05-09 01:31:58" itemprop="dateModified" datetime="2025-05-09T01:31:58-04:00">2025-05-09</time>
+              </span>
+
+          
+
+        </div>
       </header>
+
     
-    <div class="e-content article-entry" itemprop="articleBody">
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
         <h2 id="introduction">Introduction</h2>
-<p>Flow matching and Schr<span class="math inline">\(\&quot;{\rm
+<p>Flow matching and Schr<span class="math inline">\(\ddot{\rm
 o}\)</span>dinger Bridge Matching are methods for training
 <strong>generative</strong> models by matching the <strong>flow</strong>
 between two distributions through a neural network. The goal is to learn
@@ -110,191 +210,303 @@ perspective of <strong>mean field control</strong> (optimal
 control).</p>
 <h3 id="flow-matching">Flow Matching</h3>
 <p>Consider two distributions <span class="math inline">\(\mu_0\)</span>
-and <span class="math inline">\(\mu_1\)</span> over <span
-class="math inline">\(\mathbb{R}^d\)</span>. The ODE based methods
+and <span class="math inline">\(\mu_1\)</span> over <span class="math inline">\(\mathbb{R}^d\)</span>. The ODE based methods
 (e.g. normalizing flows, flow matching) learn a mapping between these
 two distributions by solving the following ODE:</p>
 <p><span class="math display">\[
-\frac{dx_t}{dt} = f_\theta(x_t, t), \quad x_0 \sim \rho_0, \quad
+\begin{equation}
+    \frac{dx_t}{dt} = f_\theta(x_t, t), \quad x_0 \sim \rho_0, \quad
 \rho_0=\mu_0, \quad \rho_1=\mu_1
-\tag{1}
+\end{equation}
 \]</span></p>
 <p>where <span class="math inline">\(f_\theta\)</span> is a neural
 network parameterized by <span class="math inline">\(\theta\)</span>.
 Once the velocity field <span class="math inline">\(f_\theta\)</span> is
 learned, we can sample from <span class="math inline">\(\rho_1\)</span>
 by solving the ODE: <span class="math display">\[
-x_1 = x_0 + \int_0^1 f_\theta(x_t, t) dt,\quad x_0 \sim \rho_0, \quad
-\rho_0=\mu_0\tag{2}
+\begin{equation}\label{ode}
+    x_1 = x_0 + \int_0^1 f_\theta(x_t, t) dt,\quad x_0 \sim \rho_0,
+\quad \rho_0=\mu_0\
+\end{equation}
 \]</span></p>
 <h4 id="construct-a-path">Construct A Path</h4>
 <p>Unlike normalizing flows, which only constraints the target
-distribution by minimizing the <a
-target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence">Kullback-Leibler
-divergence</a> between the generated distribution <span
-class="math inline">\(\rho_1\)</span> and the real target distribution
+distribution by minimizing the <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence">Kullback-Leibler
+divergence</a> between the generated distribution <span class="math inline">\(\rho_1\)</span> and the real target distribution
 <span class="math inline">\(\mu_1\)</span>, flow matching methods do not
 directly minimize the KL divergence. Instead, they construct a path
-(flow) between the two distributions and fit the derivative (a.k.a. the
-<strong>velocity field</strong>) of the path by minimizing the following
+(flow) between the two distributions and fit the derivative of the path
+(a.k.a. the <strong>velocity field</strong>) by minimizing the following
 objective: <span class="math display">\[
-\min_\theta \mathbb{E}_{(x_0, x_1)\sim
+\begin{equation}
+    \min_\theta \mathbb{E}_{(x_0, x_1)\sim
 \pi}\left[\left\|f_\theta(x_t,t)-\frac{\partial\Phi_t(x_0,x_t)}{\partial
-t}\right\|^2\right]\tag{3}
+t}\right\|^2\right]
+\end{equation}
 \]</span></p>
 <p>where <span class="math inline">\(\pi\in\prod(\mu_0,\mu_1)\)</span>
-is one of the joint distribution whose marginals are <span
-class="math inline">\(\mu_0\)</span> and <span
-class="math inline">\(\mu_1\)</span>. <span
-class="math inline">\(\Phi_t(x_0,x_1):\mathbb{R}^d\times
+is one of the joint distribution whose marginals are <span class="math inline">\(\mu_0\)</span> and <span class="math inline">\(\mu_1\)</span>. <span class="math inline">\(\Phi_t(x_0,x_1):\mathbb{R}^d\times
 \mathbb{R}^d\rightarrow \mathbb{R}^d\)</span> is the trajectory of the
-flow between <span class="math inline">\(x_0\)</span> and <span
-class="math inline">\(x_1\)</span> at time <span
-class="math inline">\(t\)</span>. It satisfies <span
-class="math inline">\(x_t=\Phi_t(x_0,x_1)\)</span>, and <span
-class="math inline">\(\frac{\partial\Phi_t(x_0,x_t)}{\partial
+flow between <span class="math inline">\(x_0\)</span> and <span class="math inline">\(x_1\)</span> at time <span class="math inline">\(t\)</span>. It satisfies <span class="math inline">\(x_t=\Phi_t(x_0,x_1)\)</span>, and <span class="math inline">\(\frac{\partial\Phi_t(x_0,x_t)}{\partial
 t}\)</span> is the velocity field of the flow. The objective is to
-minimize the difference between the learned velocity field <span
-class="math inline">\(f_\theta\)</span> and the pre-defined velocity
-field <span
-class="math inline">\(\frac{\partial\Phi_t(x_0,x_t)}{\partial
+minimize the difference between the learned velocity field <span class="math inline">\(f_\theta\)</span> and the pre-defined velocity
+field <span class="math inline">\(\frac{\partial\Phi_t(x_0,x_t)}{\partial
 t}\)</span>.</p>
-<h4 id="choice-of-pi-and-phi_t">Choice of <span
-class="math inline">\(\pi\)</span> and <span
-class="math inline">\(\Phi_t\)</span></h4>
+<h4 id="choice-of-pi-and-phi_t">Choice of <span class="math inline">\(\pi\)</span> and <span class="math inline">\(\Phi_t\)</span></h4>
 <p>Here comes the choice of <span class="math inline">\(\pi\)</span> and
 <span class="math inline">\(\Phi_t\)</span>. We first talk about the
 choice of the path <span class="math inline">\(\Phi_t\)</span> between
-two points <span class="math inline">\(x_0\)</span> and <span
-class="math inline">\(x_1\)</span>. One of the most intuitive options
-will be the straight line, i.e., the linear interpolation <span
-class="math inline">\(x_t=\Phi_t(x_0,x_1)=(1-t)x_0+tx_1\)</span>. Hence,
-the velocity field is given by <span
-class="math inline">\(\frac{\partial \Phi_t}{\partial
+two points <span class="math inline">\(x_0\)</span> and <span class="math inline">\(x_1\)</span>. One of the most intuitive options
+will be the straight line, i.e., the linear interpolation <span class="math inline">\(x_t=\Phi_t(x_0,x_1)=(1-t)x_0+tx_1\)</span>. Hence,
+the velocity field is given by <span class="math inline">\(\frac{\partial \Phi_t}{\partial
 t}=x_1-x_0\)</span>.</p>
 <p>Besides the <strong>simplicity</strong> of the linear interpolation,
 another advantage is that if the learned velocity field perfectly
 matches the pre-defined velocity field, then the generated distribution
 <span class="math inline">\(\rho_1\)</span> will be exactly the target
 distribution <span class="math inline">\(\mu_1\)</span> and we can
-sample from <span class="math inline">\(\mu_1\)</span> by <span
-class="math inline">\(x_0+f_\theta(x_0,0)\)</span> because the velocity
+sample from <span class="math inline">\(\mu_1\)</span> by <span class="math inline">\(x_0+f_\theta(x_0,0)\)</span> because the velocity
 is constant. ( Of course in most cases it can not fit perfectly and
-therefore we solve it with eq. (2) ).</p>
+therefore we solve it with eq. <span class="math inline">\(\eqref{ode}\)</span> ).</p>
 <figure>
-<img src="straight.png" alt="flow" />
+<img src="/.com//straight.png" alt="flow">
 <figcaption aria-hidden="true">flow</figcaption>
 </figure>
 
-      
     </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2025/05/07/mean-field/" data-id="cmafcwei900001ud2bmpa1c5v" data-title="Flow-based Generative Model from Mean Field Perspective" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Flow-Matching-Mean-Field-Control-Schr-rm-o-dinger-Bridge/" rel="tag">Flow Matching, Mean Field Control, Schr$\&quot;{\rm o}$dinger Bridge</a></li></ul>
 
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Flow-Matching-Mean-Field-Control-Schr-ddot-rm-o-dinger-Bridge/" rel="tag"># Flow Matching, Mean Field Control, Schr$\ddot{\rm o}$dinger Bridge</a>
+          </div>
+
+        
+
+
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#flow-matching"><span class="nav-number">1.1.</span> <span class="nav-text">Flow Matching</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#construct-a-path"><span class="nav-number">1.1.1.</span> <span class="nav-text">Construct A Path</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#choice-of-pi-and-phi_t"><span class="nav-number">1.1.2.</span> <span class="nav-text">Choice of \(\pi\) and \(\Phi_t\)</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Zhixuan Zhou</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zhixuan Zhou</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
     </footer>
   </div>
-  
-    
-  
-</article>
-
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
 
   
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flow-Matching-Mean-Field-Control-Schr-rm-o-dinger-Bridge/" rel="tag">Flow Matching, Mean Field Control, Schr$\&quot;{\rm o}$dinger Bridge</a></li></ul>
-    </div>
-  </div>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
 
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Flow-Matching-Mean-Field-Control-Schr-rm-o-dinger-Bridge/" style="font-size: 10px;">Flow Matching, Mean Field Control, Schr$\"{\rm o}$dinger Bridge</a>
-    </div>
-  </div>
+<script src="/js/schemes/muse.js"></script>
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/05/">May 2025</a></li></ul>
-    </div>
-  </div>
+
+<script src="/js/next-boot.js"></script>
+
+
 
 
   
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2025/05/07/mean-field/">Flow-based Generative Model from Mean Field Perspective</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   
-</aside>
-        
-      </div>
-      <footer id="footer">
+
   
-  <div class="outer">
-    <div id="footer-info" class="inner">
       
-      &copy; 2025 Zhixuan Zhou<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
 
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
     
 
-
-<script src="/js/jquery-3.6.4.min.js"></script>
-
-
-
   
-<script src="/fancybox/jquery.fancybox.min.js"></script>
 
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
-
-  </div>
 </body>
 </html>

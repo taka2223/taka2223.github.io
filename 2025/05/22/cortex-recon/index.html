@@ -21,22 +21,19 @@
     var CONFIG = {"hostname":"taka2223.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="Introduction Flow matching and Schr\(\ddot{\rm o}\)dinger Bridge Matching are methods for training generative models by matching the flow between two distributions through a neural network. The goal i">
+  <meta name="description" content="Introduction Cortex surface reconstruction is a critical step in neuroimaging, particularly in the analysis of brain structure and function. The goal is to create a 3D representation of the cortical s">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Flow-based Generative Model from Mean Field Perspective">
-<meta property="og:url" content="https://taka2223.github.io/2025/05/07/mean-field/index.html">
+<meta property="og:title" content="Accelerating Cortex-Surface Reconstruction with Neural Networks">
+<meta property="og:url" content="https://taka2223.github.io/2025/05/22/cortex-recon/index.html">
 <meta property="og:site_name" content="Chiyuen&#39;s Blog">
-<meta property="og:description" content="Introduction Flow matching and Schr\(\ddot{\rm o}\)dinger Bridge Matching are methods for training generative models by matching the flow between two distributions through a neural network. The goal i">
+<meta property="og:description" content="Introduction Cortex surface reconstruction is a critical step in neuroimaging, particularly in the analysis of brain structure and function. The goal is to create a 3D representation of the cortical s">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://taka2223.github.io/images/straight.png">
-<meta property="article:published_time" content="2025-05-07T12:32:08.000Z">
-<meta property="article:modified_time" content="2025-05-09T06:10:22.741Z">
+<meta property="article:published_time" content="2025-05-22T08:07:38.000Z">
+<meta property="article:modified_time" content="2025-05-22T11:20:45.932Z">
 <meta property="article:author" content="Zhixuan Zhou">
-<meta property="article:tag" content="Flow Matching, Mean Field Control, Schr$\ddot{\rm o}$dinger Bridge">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://taka2223.github.io/images/straight.png">
 
-<link rel="canonical" href="https://taka2223.github.io/2025/05/07/mean-field/">
+<link rel="canonical" href="https://taka2223.github.io/2025/05/22/cortex-recon/">
 
 
 <script id="page-configurations">
@@ -49,7 +46,7 @@
   };
 </script>
 
-  <title>Flow-based Generative Model from Mean Field Perspective | Chiyuen's Blog</title>
+  <title>Accelerating Cortex-Surface Reconstruction with Neural Networks | Chiyuen's Blog</title>
   
 
 
@@ -154,7 +151,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://taka2223.github.io/2025/05/07/mean-field/">
+    <link itemprop="mainEntityOfPage" href="https://taka2223.github.io/2025/05/22/cortex-recon/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -167,7 +164,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Flow-based Generative Model from Mean Field Perspective
+          Accelerating Cortex-Surface Reconstruction with Neural Networks
         </h1>
 
         <div class="post-meta">
@@ -176,16 +173,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2025-05-07 08:32:08" itemprop="dateCreated datePublished" datetime="2025-05-07T08:32:08-04:00">2025-05-07</time>
+              <time title="Created: 2025-05-22 04:07:38 / Modified: 07:20:45" itemprop="dateCreated datePublished" datetime="2025-05-22T04:07:38-04:00">2025-05-22</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2025-05-09 02:10:22" itemprop="dateModified" datetime="2025-05-09T02:10:22-04:00">2025-05-09</time>
-              </span>
 
           
 
@@ -199,79 +190,37 @@
 
       
         <h2 id="introduction">Introduction</h2>
-<p>Flow matching and Schr<span class="math inline">\(\ddot{\rm
-o}\)</span>dinger Bridge Matching are methods for training
-<strong>generative</strong> models by matching the <strong>flow</strong>
-between two distributions through a neural network. The goal is to learn
-a mapping between two distributions (e.g. from Gaussian to natural
-images) by minimizing the difference between the pre-defined flow and
-the learned one. In this blog, we try to unify/ connect them from the
-perspective of <strong>mean field control</strong> (optimal
-control).</p>
-<h3 id="flow-matching">Flow Matching</h3>
-<p>Consider two distributions <span class="math inline">\(\mu_0\)</span>
-and <span class="math inline">\(\mu_1\)</span> over <span class="math inline">\(\mathbb{R}^d\)</span>. The ODE based methods
-(e.g. normalizing flows, flow matching) learn a mapping between these
-two distributions by solving the following ODE:</p>
-<p><span class="math display">\[
-\begin{equation}
-    \frac{dx_t}{dt} = f_\theta(x_t, t), \quad x_0 \sim \rho_0, \quad
-\rho_0=\mu_0, \quad \rho_1=\mu_1
-\end{equation}
-\]</span></p>
-<p>where <span class="math inline">\(f_\theta\)</span> is a neural
-network parameterized by <span class="math inline">\(\theta\)</span>.
-Once the velocity field <span class="math inline">\(f_\theta\)</span> is
-learned, we can sample from <span class="math inline">\(\rho_1\)</span>
-by solving the ODE: <span class="math display">\[
-\begin{equation}\label{ode}
-    x_1 = x_0 + \int_0^1 f_\theta(x_t, t) dt,\quad x_0 \sim \rho_0,
-\quad \rho_0=\mu_0\
-\end{equation}
-\]</span></p>
-<h4 id="construct-a-path">Construct A Path</h4>
-<p>Unlike normalizing flows, which only constraints the target
-distribution by minimizing the <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence">Kullback-Leibler
-divergence</a> between the generated distribution <span class="math inline">\(\rho_1\)</span> and the real target distribution
-<span class="math inline">\(\mu_1\)</span>, flow matching methods do not
-directly minimize the KL divergence. Instead, they construct a path
-(flow) between the two distributions and fit the derivative of the path
-(a.k.a. the <strong>velocity field</strong>) by minimizing the following
-objective: <span class="math display">\[
-\begin{equation}
-    \min_\theta \mathbb{E}_{(x_0, x_1)\sim
-\pi}\left[\left\|f_\theta(x_t,t)-\frac{\partial\Phi_t(x_0,x_t)}{\partial
-t}\right\|^2\right]
-\end{equation}
-\]</span></p>
-<p>where <span class="math inline">\(\pi\in\prod(\mu_0,\mu_1)\)</span>
-is one of the joint distribution whose marginals are <span class="math inline">\(\mu_0\)</span> and <span class="math inline">\(\mu_1\)</span>. <span class="math inline">\(\Phi_t(x_0,x_1):\mathbb{R}^d\times
-\mathbb{R}^d\rightarrow \mathbb{R}^d\)</span> is the trajectory of the
-flow between <span class="math inline">\(x_0\)</span> and <span class="math inline">\(x_1\)</span> at time <span class="math inline">\(t\)</span>. It satisfies <span class="math inline">\(x_t=\Phi_t(x_0,x_1)\)</span>, and <span class="math inline">\(\frac{\partial\Phi_t(x_0,x_t)}{\partial
-t}\)</span> is the velocity field of the flow. The objective is to
-minimize the difference between the learned velocity field <span class="math inline">\(f_\theta\)</span> and the pre-defined velocity
-field <span class="math inline">\(\frac{\partial\Phi_t(x_0,x_t)}{\partial
-t}\)</span>.</p>
-<h4 id="choice-of-pi-and-phi_t">Choice of <span class="math inline">\(\pi\)</span> and <span class="math inline">\(\Phi_t\)</span></h4>
-<p>Here comes the choice of <span class="math inline">\(\pi\)</span> and
-<span class="math inline">\(\Phi_t\)</span>. We first talk about the
-choice of the path <span class="math inline">\(\Phi_t\)</span> between
-two points <span class="math inline">\(x_0\)</span> and <span class="math inline">\(x_1\)</span>. One of the most intuitive options
-will be the straight line, i.e., the linear interpolation <span class="math inline">\(x_t=\Phi_t(x_0,x_1)=(1-t)x_0+tx_1\)</span>. Hence,
-the velocity field is given by <span class="math inline">\(\frac{\partial \Phi_t}{\partial
-t}=x_1-x_0\)</span>.</p>
-<p>Besides the <strong>simplicity</strong> of the linear interpolation,
-another advantage is that if the learned velocity field perfectly
-matches the pre-defined velocity field, then the generated distribution
-<span class="math inline">\(\rho_1\)</span> will be exactly the target
-distribution <span class="math inline">\(\mu_1\)</span> and we can
-sample from <span class="math inline">\(\mu_1\)</span> by <span class="math inline">\(x_0+f_\theta(x_0,0)\)</span> because the velocity
-is constant. ( Of course in most cases it can not fit perfectly and
-therefore we solve it with eq. <span class="math inline">\(\eqref{ode}\)</span> ).</p>
-<figure>
-<img src="/images/straight.png" alt="xxx">
-<figcaption aria-hidden="true">xxx</figcaption>
-</figure>
+<p>Cortex surface reconstruction is a critical step in neuroimaging,
+particularly in the analysis of brain structure and function. The goal
+is to create a 3D representation of the cortical surface from 2D images
+or volumetric data. This process is essential for various applications,
+including brain mapping, functional imaging, and studying neurological
+disorders. However, traditional methods for cortex surface
+reconstruction can be computationally expensive and time-consuming.
+Hence, we explore how neural networks can be leveraged to accelerate the
+cortex surface reconstruction process.</p>
+<h2 id="traditional-cortex-reconstruction-algorithm">Traditional Cortex
+Reconstruction Algorithm</h2>
+<ul>
+<li><em>Talairach Registration:</em> Use the automated Talairach
+registration procedure to compute the transformation matrix. This
+procedure aligns the brain images to a standard anatomical space,
+allowing for consistent comparisons across subjects.</li>
+<li><em>Intensity Normalization:</em> Correct the image intensity
+variations (or ‘‘bias fields’’)</li>
+<li><em>Skull Stripping</em>: Remove non-brain tissues (skull, scalp,
+etc.) from the images. This step is crucial for accurate brain surface
+reconstruction.</li>
+<li><em>Segmentation:</em> Find and segment the white matter (WM) and
+gray matter (GM) regions. This step is essential for identifying the
+cortical surface.</li>
+<li><em>Cutting Planes:</em> Cut the brain into two hemispheres using a
+cutting plane. This step is necessary for separating the left and right
+hemispheres of the brain.</li>
+<li><em>Surface Tessellation and Deformation:</em> The final surface is
+created by tessellating the white matter boundary, then refining it
+using a deformable surface algorithm.</li>
+</ul>
 
     </div>
 
@@ -280,20 +229,17 @@ therefore we solve it with eq. <span class="math inline">\(\eqref{ode}\)</span> 
     
 
       <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/Flow-Matching-Mean-Field-Control-Schr-ddot-rm-o-dinger-Bridge/" rel="tag"># Flow Matching, Mean Field Control, Schr$\ddot{\rm o}$dinger Bridge</a>
-          </div>
 
         
 
 
         
     <div class="post-nav">
-      <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/2025/05/22/cortex-recon/" rel="next" title="Accelerating Cortex-Surface Reconstruction with Neural Networks">
-      Accelerating Cortex-Surface Reconstruction with Neural Networks <i class="fa fa-chevron-right"></i>
+    <a href="/2025/05/07/mean-field/" rel="prev" title="Flow-based Generative Model from Mean Field Perspective">
+      <i class="fa fa-chevron-left"></i> Flow-based Generative Model from Mean Field Perspective
     </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -352,7 +298,8 @@ therefore we solve it with eq. <span class="math inline">\(\eqref{ode}\)</span> 
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#flow-matching"><span class="nav-number">1.1.</span> <span class="nav-text">Flow Matching</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#construct-a-path"><span class="nav-number">1.1.1.</span> <span class="nav-text">Construct A Path</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#choice-of-pi-and-phi_t"><span class="nav-number">1.1.2.</span> <span class="nav-text">Choice of \(\pi\) and \(\Phi_t\)</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#traditional-cortex-reconstruction-algorithm"><span class="nav-number">2.</span> <span class="nav-text">Traditional Cortex
+Reconstruction Algorithm</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

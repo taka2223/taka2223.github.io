@@ -146,6 +146,96 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://taka2223.github.io/2025/05/22/cortex-recon/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Zhixuan Zhou">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Chiyuen's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/05/22/cortex-recon/" class="post-title-link" itemprop="url">Accelerating Cortex-Surface Reconstruction with Neural Networks</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2025-05-22 04:07:38 / Modified: 07:20:45" itemprop="dateCreated datePublished" datetime="2025-05-22T04:07:38-04:00">2025-05-22</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="introduction">Introduction</h2>
+<p>Cortex surface reconstruction is a critical step in neuroimaging,
+particularly in the analysis of brain structure and function. The goal
+is to create a 3D representation of the cortical surface from 2D images
+or volumetric data. This process is essential for various applications,
+including brain mapping, functional imaging, and studying neurological
+disorders. However, traditional methods for cortex surface
+reconstruction can be computationally expensive and time-consuming.
+Hence, we explore how neural networks can be leveraged to accelerate the
+cortex surface reconstruction process.</p>
+<h2 id="traditional-cortex-reconstruction-algorithm">Traditional Cortex
+Reconstruction Algorithm</h2>
+<ul>
+<li><em>Talairach Registration:</em> Use the automated Talairach
+registration procedure to compute the transformation matrix. This
+procedure aligns the brain images to a standard anatomical space,
+allowing for consistent comparisons across subjects.</li>
+<li><em>Intensity Normalization:</em> Correct the image intensity
+variations (or ‘‘bias fields’’)</li>
+<li><em>Skull Stripping</em>: Remove non-brain tissues (skull, scalp,
+etc.) from the images. This step is crucial for accurate brain surface
+reconstruction.</li>
+<li><em>Segmentation:</em> Find and segment the white matter (WM) and
+gray matter (GM) regions. This step is essential for identifying the
+cortical surface.</li>
+<li><em>Cutting Planes:</em> Cut the brain into two hemispheres using a
+cutting plane. This step is necessary for separating the left and right
+hemispheres of the brain.</li>
+<li><em>Surface Tessellation and Deformation:</em> The final surface is
+created by tessellating the white matter boundary, then refining it
+using a deformable surface algorithm.</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://taka2223.github.io/2025/05/07/mean-field/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -346,7 +436,7 @@ therefore we solve it with eq. <span class="math inline">\(\eqref{ode}\)</span> 
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
